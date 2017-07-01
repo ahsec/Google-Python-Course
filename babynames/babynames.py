@@ -37,9 +37,9 @@ Suggested milestones for incremental development:
 
 def get_year(filename):
   """
-  This function will extract the year from a file when it is preceded 
+  This function will extract the year from a file when it is preceded
   by the "<h3 align="center">)(Popularity in )" string
-  Open the file with read permissions, search for the corresponding pattern 
+  Open the file with read permissions, search for the corresponding pattern
   and read the 3rd group (the one that contains the year)
   If there's a match will print the year, else it will print an error message
   """
@@ -59,9 +59,11 @@ def get_Keys(dictionary):
   return dictionary[0]
 
 def get_name_rank(filename):
-  """ 
-  Reads names and ranks from a file. Name must be preceded by: <tr align="right"><td> YEAR </td><td> NAME </td><td> NAME
-  Stores matches in "match" variable and creates dictionary. Male and female names serve as keys and the rank as value
+  """
+  Reads names and ranks from a file. Name must be preceded by:
+  <tr align="right"><td> YEAR </td><td> NAME </td><td> NAME
+  Stores matches in "match" variable and creates dictionary.
+  Male and female names serve as keys and the rank as value
   returns dictionary sorted by keys (name alphabetically sorted).
   """
   dictionary = {}
@@ -83,7 +85,7 @@ def extract_names(filename):
   followed by the name-rank strings in alphabetical order.
   ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
   """
-  ret_list = [] 
+  ret_list = []
   year = get_year(filename)
   dictionary = get_name_rank(filename)
   ret_list.append(year)
@@ -101,7 +103,7 @@ def main():
   if not args:
     print 'usage: [--summaryfile] file [file ...]'
     sys.exit(1)
-  
+
 
   # Notice the summary flag and remove it from args if it is present.
   summary = False
