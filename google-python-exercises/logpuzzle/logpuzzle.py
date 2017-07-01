@@ -15,38 +15,47 @@ import urllib
 Given an apache logfile, find the puzzle urls and download the images.
 
 Here's what a puzzle url looks like:
-10.254.254.28 - - [06/Aug/2007:00:13:48 -0700] "GET /~foo/puzzle-bar-aaab.jpg HTTP/1.0" 302 528 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
+10.254.254.28 - - [06/Aug/2007:00:13:48 -0700] "GET /~foo/puzzle-bar-aaab.jpg
+HTTP/1.0" 302 528 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US;
+rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
 """
 
 def get_hostname(filename):
-  # Returns the hostname from a file with the following naming convention 
+  # Returns the hostname from a file with the following naming convention
   # "animal_code.google.com" "place_code.google.com" where the hostname is code.google.com
   match = re.search(r'([\w+])(_)([\w+.]+)', filename)
   return match.group(3)
 
 def get_path(filename):
-  # Reads the content of a log file and returns the path where a puzzle image can be found
-  # 10.254.254.28 - - [06/Aug/2007:00:13:47 -0700] "GET /edu/languages/google-python-class/images/puzzle/a-baaj.jpg HTTP/1.0" 302 414 "-" "googlebot-mscrawl-moma (enterprise; bar-XYZ; foo123@google.com,foo123@google.com,foo123@google.com,foo123@google.com)"
-  # Returns /edu/languages/google-python-class/images/puzzle/a-baaj.jpg if found, else returns "0"
+  '''
+  Reads the content of a log file and returns the path where a puzzle
+  image can be found
+  10.254.254.28 - - [06/Aug/2007:00:13:47 -0700]
+  "GET /edu/languages/google-python-class/images/puzzle/a-baaj.jpg HTTP/1.0"
+  302 414 "-" "googlebot-mscrawl-moma (enterprise; bar-XYZ; foo123@google.com,
+  foo123@google.com,foo123@google.com,foo123@google.com)"
+  Returns /edu/languages/google-python-class/images/puzzle/a-baaj.jpg
+  if found, else returns "0"
+  '''
   filed = open(filename, 'rU')
   string = filed.read()
   match = re.findall(r'([\w.\s\[\/:\]-]+)("GET\s)([/\w.-]+)', string)
   if match:
     return match
-  else: 
+  else:
     return 0
 
 def get_name_tail(url_list):
   # Auxiliary function for the read_urls sorted method.
-  # It returns the last word when a filename is named 
+  # It returns the last word when a filename is named
   # like word-word-word.jpg
   # i.e. For p-bjjc-bbjd.jpg, returns bbjd
   filename_list = []
-  print "To match: " + url_list 
+  print "To match: " + url_list
   match = re.search(r'([\w:/.-])+([\w-]+)-([\w]+)-([\w]+)(.jpg)', url_list)
   filename_list.append(match.group(4))
   return filename_list
-  
+
 def read_urls(filename):
   """Returns a list of the puzzle urls from the given log file,
   extracting the hostname from the filename itself.
@@ -66,12 +75,12 @@ def read_urls(filename):
   url = paths_list2[0]
   match = re.search(r'([\w:/.-])+([\w-]+)-([\w]+)-([\w]+)(.jpg)', url)
   if match:
-    print "Special naming detected" 
+    print "Special naming detected"
     paths_list2 = sorted(paths_list2, key = get_name_tail)
   else:
     paths_list2.sort()
   return paths_list2
-  
+
 def download_images(img_urls, dest_dir):
   """Given the urls already in the correct order, downloads
   each image into the given directory.
